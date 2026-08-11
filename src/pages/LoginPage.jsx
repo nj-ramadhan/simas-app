@@ -23,24 +23,53 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-80">
-        <h1 className="text-xl font-bold mb-4">Login SIMAS</h1>
-        {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
-        <input
-          type="email" placeholder="Email" value={email}
-          onChange={e => setEmail(e.target.value)}
-          className="w-full border p-2 rounded mb-3"
-        />
-        <input
-          type="password" placeholder="Password" value={password}
-          onChange={e => setPassword(e.target.value)}
-          className="w-full border p-2 rounded mb-4"
-        />
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded">
-          Masuk
-        </button>
-      </form>
+    <div className="login-screen">
+      <div className="login-shell">
+        <aside className="login-brand-panel">
+          <div className="login-brand-content">
+            <div className="login-logo">S</div>
+            <div>
+              <h1>SIMAS</h1>
+              <p>Sistem Informasi Masyarakat</p>
+            </div>
+          </div>
+          <div className="login-highlight">
+            <span className="login-tag">Dashboard RW/RT</span>
+            <p>Kelola data warga, laporan, aset, Iuran, dan kegiatan perangkat lingkungan secara terintegrasi.</p>
+          </div>
+        </aside>
+
+        <section className="login-card-wrap">
+          <form onSubmit={handleSubmit} className="login-card">
+            <div className="login-header">
+              <span className="login-kicker">Portal Login</span>
+              <h2>Selamat Datang</h2>
+            </div>
+            {error && <p className="login-error">{error}</p>}
+            <div className="field-group">
+              <label className="form-label" htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="email" placeholder="nama@domain.com" value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="form-control"
+              />
+            </div>
+            <div className="field-group">
+              <label className="form-label" htmlFor="password">Password</label>
+              <input
+                id="password"
+                type="password" placeholder="••••••••" value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="form-control"
+              />
+            </div>
+            <button type="submit" className="login-button">
+              Masuk ke Dashboard
+            </button>
+          </form>
+        </section>
+      </div>
     </div>
   );
 }

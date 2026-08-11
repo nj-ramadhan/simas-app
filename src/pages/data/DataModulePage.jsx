@@ -76,27 +76,33 @@ export default function DataModulePage({ config }) {
   }
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold">{title}</h1>
+    <div className="data-page">
+      <div className="data-page-header">
+        <div>
+          <span className="section-kicker">Data Master</span>
+          <h1>{title}</h1>
+        </div>
         {canWrite && (
-          <button onClick={openCreate} className="bg-blue-600 text-white px-4 py-2 rounded text-sm">
+          <button onClick={openCreate} className="primary-button small-button">
             + Tambah Data
           </button>
         )}
       </div>
 
-      {error && <p className="text-red-600 text-sm mb-3">{error}</p>}
+      {error && <p className="error-message">{error}</p>}
 
       {loading ? (
-        <p className="text-gray-500">Memuat data...</p>
+        <div className="loader-wrap">
+          <span className="loading-spinner"></span>
+          <p>Memuat data...</p>
+        </div>
       ) : (
         <DataTable columns={columns} data={data} canWrite={canWrite} onEdit={openEdit} onDelete={handleDelete} />
       )}
 
       {showModal && (
         <Modal title={editing ? 'Edit Data' : 'Tambah Data'} onClose={() => setShowModal(false)}>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="data-form">
             {formFields.map((field) => (
               <FormField
                 key={field.key}
@@ -105,7 +111,7 @@ export default function DataModulePage({ config }) {
                 onChange={(k, v) => setForm((prev) => ({ ...prev, [k]: v }))}
               />
             ))}
-            <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded mt-2">
+            <button type="submit" className="submit-button">
               Simpan
             </button>
           </form>

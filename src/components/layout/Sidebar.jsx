@@ -1,6 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
+const ROLE_LABEL = { rw_admin: 'Admin RW', rt_admin: 'Admin RT', warga: 'Warga' };
+
 const MENU_BY_ROLE = {
   rw_admin: [
     { to: '/rw', label: 'Dashboard' },
@@ -44,36 +46,61 @@ export default function Sidebar() {
   const menu = MENU_BY_ROLE[user.role] || [];
 
   return (
-    <aside className="w-64 bg-gray-900 text-gray-100 min-h-screen flex flex-col">
-      <div className="p-4 text-lg font-bold border-b border-gray-700">SIMAS</div>
-      <nav className="flex-1 overflow-y-auto p-2 space-y-1">
+    <aside className="app-sidebar">
+      <div className="brand-wrap">
+        <div className="brand-icon">
+          <span aria-hidden="true">S</span>
+        </div>
+        <div>
+          <div className="brand-title">SIMAS</div>
+          <div className="brand-subtitle">Sistem Informasi</div>
+        </div>
+      </div>
+
+      <div className="profile-card">
+        <div className="profile-avatar">
+          {user?.nama ? user.nama.charAt(0).toUpperCase() : 'U'}
+        </div>
+        <div>
+          <div className="profile-name">{user?.nama || 'Pengguna'}</div>
+          <div className="profile-role">{ROLE_LABEL[user?.role] || 'User'}</div>
+        </div>
+      </div>
+
+      <nav className="side-nav">
         {menu.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
             end={item.to.split('/').length === 2}
             className={({ isActive }) =>
-              `block px-3 py-2 rounded text-sm ${isActive ? 'bg-blue-600' : 'hover:bg-gray-800'}`
+              `nav-link ${isActive ? 'active' : ''}`
             }
           >
+            <span className="nav-icon" aria-hidden="true">
+              {item.label.includes('Dashboard') ? '◇' : item.label.includes('Data') ? '◌' : '○'}
+            </span>
             {item.label}
           </NavLink>
         ))}
 
-        <p className="px-3 pt-4 pb-1 text-xs uppercase text-gray-500">Laporan Keuangan</p>
+        <div className="nav-section-title">Laporan Keuangan</div>
         {KEUANGAN_MENU.map((k) => (
           <NavLink
             key={k.jenis}
             to={`/keuangan/${k.jenis}`}
             className={({ isActive }) =>
-              `block px-3 py-2 rounded text-sm ${isActive ? 'bg-blue-600' : 'hover:bg-gray-800'}`
+              `nav-link ${isActive ? 'active' : ''}`
             }
           >
+            <span className="nav-icon" aria-hidden="true">✦</span>
             {k.label}
           </NavLink>
         ))}
       </nav>
-      <button onClick={logout} className="m-2 px-3 py-2 rounded bg-red-600 hover:bg-red-700 text-sm">
+
+      <button onClick={logout} className="logout-button">
+        <span aria-hidden="true">↵</span>
         Keluar
       </button>
     </aside>

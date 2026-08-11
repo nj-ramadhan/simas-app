@@ -16,14 +16,17 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env.local' });
 
+const connectionString = process.env.POSTGRES_URL;
+const isLocalDb = /localhost|127\.0\.0\.1/.test(connectionString);
+
 const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL,
-  ssl: { rejectUnauthorized: false },
+  connectionString,
+  ssl: isLocalDb ? false : { rejectUnauthorized: false },
 });
 
 async function main() {
   const EMAIL = 'admin@simas.local';   // <-- ganti sesuai keinginan
-  const PASSWORD = 'GantiPasswordIni123'; // <-- WAJIB ganti sebelum run
+  const PASSWORD = 'admin'; // <-- WAJIB ganti sebelum run
 
   const idRw = randomUUID();
   const idRt = randomUUID();

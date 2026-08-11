@@ -3,12 +3,14 @@ import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 
 export default function DashboardLayout() {
+  console.log('🔵 DashboardLayout mounted');
+  
   return (
-    <div className="flex">
+    <div className="dashboard-frame">
       <Sidebar />
-      <div className="flex-1 min-h-screen bg-gray-50">
+      <div className="content-area">
         <Navbar />
-        <main>
+        <main className="app-main-content">
           <Outlet />
         </main>
       </div>

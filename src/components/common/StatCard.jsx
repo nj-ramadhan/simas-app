@@ -1,18 +1,49 @@
-// Catatan: warna dipetakan ke class Tailwind statis (bukan template string
-// dinamis "border-${color}-500") karena Tailwind hanya bisa mendeteksi
-// nama class yang ditulis utuh saat proses build/purge.
-const COLOR_MAP = {
-  blue: 'border-blue-500',
-  green: 'border-green-500',
-  red: 'border-red-500',
-  yellow: 'border-yellow-500',
+const ICON_MAP = {
+  blue: '👥',
+  green: '📋',
+  yellow: '👴',
+  red: '💰',
+};
+
+const STYLE_MAP = {
+  blue: {
+    bg: 'linear-gradient(135deg, #e0f7ff, #d4efff)',
+    accent: '#0066cc',
+    icon: '#0066cc',
+  },
+  green: {
+    bg: 'linear-gradient(135deg, #d4ffd4, #b3f0b3)',
+    accent: '#00a84d',
+    icon: '#00a84d',
+  },
+  yellow: {
+    bg: 'linear-gradient(135deg, #fff5d4, #ffe6a3)',
+    accent: '#ff9900',
+    icon: '#ff9900',
+  },
+  red: {
+    bg: 'linear-gradient(135deg, #ffd4d4, #ffb3b3)',
+    accent: '#cc0000',
+    icon: '#cc0000',
+  },
 };
 
 export default function StatCard({ label, value, color = 'blue' }) {
+  const styles = STYLE_MAP[color] || STYLE_MAP.blue;
+  const icon = ICON_MAP[color] || ICON_MAP.blue;
+
   return (
-    <div className={`p-4 rounded-lg border-l-4 ${COLOR_MAP[color] || COLOR_MAP.blue} bg-white shadow-sm`}>
-      <p className="text-gray-500 text-sm">{label}</p>
-      <p className="text-2xl font-bold">{value}</p>
+    <div className="stat-card" style={{ background: styles.bg }}>
+      <div className="stat-icon" style={{ color: styles.icon }}>
+        {icon}
+      </div>
+      <div className="stat-content">
+        <p className="stat-label">{label}</p>
+        <p className="stat-value" style={{ color: styles.accent }}>
+          {value}
+        </p>
+      </div>
+      <div className="stat-accent" style={{ background: styles.accent }}></div>
     </div>
   );
 }

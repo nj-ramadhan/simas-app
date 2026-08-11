@@ -1,26 +1,22 @@
-// =============================================================
-// FILE INI MENGGANTIKAN api/_lib/sheets.js VERSI GOOGLE SHEETS.
-// Nama file & nama fungsi SENGAJA DIBUAT SAMA PERSIS supaya semua
-// file lain (crudFactory.js, api/warga/*, api/keuangan/*, dll)
-// TIDAK PERLU DIUBAH SAMA SEKALI — cukup timpa file ini.
-// =============================================================
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
 
 import { Pool } from 'pg';
 
 let pool;
+
 function getPool() {
   if (!pool) {
+    const connectionString = process.env.POSTGRES_URL;
+    const isLocalDb = /localhost|127\.0\.0\.1/.test(connectionString || '');
     pool = new Pool({
-      connectionString: process.env.POSTGRES_URL,
-      ssl: { rejectUnauthorized: false },
+      connectionString,
+      ssl: isLocalDb ? false : { rejectUnauthorized: false },
     });
   }
   return pool;
 }
 
-// Nama "sheet" (mis. "Sensus", "Jompo", "Keuangan_DanaSosial") dipetakan
-// ke nama tabel Postgres dengan cara di-lowercase-kan.
-// Pastikan nama tabel di schema.sql memang huruf kecil semua.
 function toTableName(sheetName) {
   return sheetName.toLowerCase();
 }

@@ -3,13 +3,13 @@ export default function FormField({ field, value, onChange }) {
 
   if (type === 'select') {
     return (
-      <div className="mb-3">
-        <label className="block text-sm font-medium mb-1">{label}</label>
+      <div className="form-field-wrap">
+        <label className="form-label">{label}</label>
         <select
           value={value || ''}
           required={required}
           onChange={(e) => onChange(key, e.target.value)}
-          className="w-full border rounded p-2"
+          className="form-control"
         >
           <option value="">-- Pilih --</option>
           {options.map((opt) => (
@@ -21,14 +21,14 @@ export default function FormField({ field, value, onChange }) {
   }
 
   return (
-    <div className="mb-3">
-      <label className="block text-sm font-medium mb-1">{label}</label>
+    <div className="form-field-wrap">
+      <label className="form-label">{label}</label>
       <input
         type={type || 'text'}
         value={value || ''}
         required={required}
         onChange={(e) => onChange(key, e.target.value)}
-        className="w-full border rounded p-2"
+        className="form-control"
       />
     </div>
   );
