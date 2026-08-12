@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS sensus (
 );
 
 CREATE TABLE IF NOT EXISTS jompo (
-  id TEXT PRIMARY KEY,
+  id TEXT REFERENCES sensus(id_warga),
   id_warga TEXT,
   id_rt TEXT,
   usia INT,
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS jompo (
 );
 
 CREATE TABLE IF NOT EXISTS anak (
-  id TEXT PRIMARY KEY,
+  id TEXT REFERENCES sensus(id_warga),
   id_warga TEXT,
   id_rt TEXT,
   tgl_lahir DATE,
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS anak (
 );
 
 CREATE TABLE IF NOT EXISTS inklusi (
-  id TEXT PRIMARY KEY,
+  id TEXT REFERENCES sensus(id_warga),
   id_warga TEXT,
   id_rt TEXT,
   jenis_disabilitas TEXT,
