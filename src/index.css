@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  font-family: 'Inter', "Segoe UI", Arial, sans-serif;
+  font-weight: 300;
   color: #244b45;
   background: #eefaf7;
   font-synthesis: none;

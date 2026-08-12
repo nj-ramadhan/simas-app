@@ -7,10 +7,6 @@ const MENU_BY_ROLE = {
   rw_admin: [
     { to: '/rw', label: 'Dashboard' },
     { to: '/rw/warga', label: 'Data Sensus Warga' },
-    { to: '/rw/jompo', label: 'Data Lansia' },
-    { to: '/rw/anak', label: 'Data Anak' },
-    { to: '/rw/inklusi', label: 'Data Inklusi' },
-    { to: '/rw/perusahaan', label: 'Data Perusahaan' },
     { to: '/rw/lingkungan', label: 'Data Lingkungan' },
     { to: '/rw/infrastruktur', label: 'Data Infrastruktur' },
     { to: '/rw/aset', label: 'Data Aset' },
@@ -18,10 +14,6 @@ const MENU_BY_ROLE = {
   rt_admin: [
     { to: '/rt', label: 'Dashboard' },
     { to: '/rt/warga', label: 'Data Sensus Warga' },
-    { to: '/rt/jompo', label: 'Data Lansia' },
-    { to: '/rt/anak', label: 'Data Anak' },
-    { to: '/rt/inklusi', label: 'Data Inklusi' },
-    { to: '/rt/perusahaan', label: 'Data Perusahaan' },
     { to: '/rt/lingkungan', label: 'Data Lingkungan' },
     { to: '/rt/infrastruktur', label: 'Data Infrastruktur' },
     { to: '/rt/aset', label: 'Data Aset' },
