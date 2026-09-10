@@ -1,4 +1,4 @@
-# Migrasi SIMAS: Google Sheets → Neon Postgres (via Vercel Marketplace)
+# Migrasi simdes: Google Sheets → Neon Postgres (via Vercel Marketplace)
 
 Kabar baik: karena arsitektur project ini sengaja dipisah (semua akses "database"
 lewat `api/_lib/sheets.js`), migrasi ini **hanya butuh mengganti 1 file backend**
@@ -9,7 +9,7 @@ yang perlu diubah.
 
 ## 1. Buat Database Neon lewat Vercel Dashboard
 
-1. Buka [vercel.com/dashboard](https://vercel.com/dashboard) → pilih project `simas-app`
+1. Buka [vercel.com/dashboard](https://vercel.com/dashboard) → pilih project `simdes-app`
 2. Masuk tab **Storage** → **Create Database** (atau **Marketplace Database**)
 3. Pilih provider **Neon** (Postgres)
 4. Ikuti wizard — pilih region terdekat (mis. Singapore untuk latency terbaik dari Indonesia)

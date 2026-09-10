@@ -1,7 +1,7 @@
 # Cara Integrasi File Tambahan Ini ke Project Anda
 
 ## 1. Copy Semua File
-Salin seluruh isi folder ini (kecuali file `CARA-INTEGRASI.md` ini sendiri) ke folder project `simas-app` Anda, **timpa jika ada file yang sama** kecuali:
+Salin seluruh isi folder ini (kecuali file `CARA-INTEGRASI.md` ini sendiri) ke folder project `simdes-app` Anda, **timpa jika ada file yang sama** kecuali:
 - `api/_lib/crudFactory.js` — file ini SENGAJA menggantikan versi sederhana sebelumnya (sekarang mendukung GET/PUT/DELETE per-id). Timpa saja.
 - Jangan timpa `App.jsx`, `AuthContext.jsx`, `ProtectedRoute.jsx`, `DataTable.jsx`, `LaporanKeuangan.jsx`, `LoginPage.jsx`, `DashboardRW.jsx`, `DashboardRT.jsx`, `DashboardWarga.jsx`, `sheets.js`, `auth.js`, `login.js`, `api/warga/*`, `api/keuangan/*`, `client.js`, `vite.config.js` — itu sudah ada dari langkah sebelumnya.
 - Jika `package.json`, `.gitignore`, `vercel.json`, `tailwind.config.js`, `postcss.config.js`, `index.html`, `src/main.jsx`, `src/index.css` sudah ada dan sudah jalan di project Anda, **tidak perlu ditimpa** — file di sini hanya jaga-jaga kalau belum ada.
@@ -62,7 +62,7 @@ import Aset from './pages/data/Aset';
 Route `/keuangan/:jenis` yang sudah ada sebelumnya tidak perlu diubah — tetap bisa diakses semua role yang login. Kalau ingin laporan keuangan juga tampil di dalam `DashboardLayout` (dengan Sidebar), pindahkan route itu ke dalam masing-masing blok `/rw`, `/rt`, `/warga` di atas.
 
 ## 3. Sesuaikan Spreadsheet
-Pastikan nama sheet di Google Spreadsheet Anda **persis sama** (case-sensitive) dengan yang dipakai kode: `Jompo`, `Anak`, `Inklusi`, `Perusahaan`, `Lingkungan`, `Infrastruktur`, `Aset` — dengan kolom header sesuai skema di panduan awal (`PANDUAN-SIMAS.md`).
+Pastikan nama sheet di Google Spreadsheet Anda **persis sama** (case-sensitive) dengan yang dipakai kode: `Jompo`, `Anak`, `Inklusi`, `Perusahaan`, `Lingkungan`, `Infrastruktur`, `Aset` — dengan kolom header sesuai skema di panduan awal (`PANDUAN-simdes.md`).
 
 ## 4. Jalankan
 ```bash

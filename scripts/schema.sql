@@ -1,5 +1,5 @@
 -- =============================================
--- SKEMA DATABASE SIMAS (PostgreSQL / Neon)
+-- SKEMA DATABASE simdes (PostgreSQL / Neon)
 -- Jalankan file ini di Neon SQL Editor (dashboard) sekali saja
 -- untuk membuat semua tabel.
 -- =============================================

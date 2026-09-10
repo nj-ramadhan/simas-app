@@ -25,7 +25,7 @@ const pool = new Pool({
 });
 
 async function main() {
-  const EMAIL = 'admin@simas.local';   // <-- ganti sesuai keinginan
+  const EMAIL = 'admin@simdes.local';   // <-- ganti sesuai keinginan
   const PASSWORD = 'admin'; // <-- WAJIB ganti sebelum run
 
   const idRw = 1;
