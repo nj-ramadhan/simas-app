@@ -1,5 +1,5 @@
 import { getRows, addRow } from '../_lib/sheets.js';
-import { verifyToken, requireRole, assertScope, AuthError } from '../_lib/auth.js';
+import { verifyToken, requireRole, assertScope } from '../_lib/auth.js';
 
 export default async function handler(req, res) {
   try {
@@ -8,12 +8,10 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       // warga & rt_admin hanya lihat RT sendiri; rw_admin lihat semua RT di RW-nya
       let data = await getRows('Sensus');
-      if (user.role !== 'rw_admin') {
-        data = data.filter(d => d.id_rt === user.id_rt);
-      } else {
-        const rtList = await getRows('RT', rt => rt.id_rw === user.id_rw);
-        const rtIds = rtList.map(rt => rt.id_rt);
-        data = data.filter(d => rtIds.includes(d.id_rt));
+      if (user.role !== 'rw_admin' && user.id_rt != null) {
+        data = data.filter(d => Number(d.id_rt) === Number(user.id_rt));
+      } else if (user.role === 'rw_admin' && user.id_rw != null) {
+        data = data.filter(d => Number(d.id_rw) === Number(user.id_rw));
       }
       return res.status(200).json(data);
     }
@@ -21,7 +19,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       requireRole(user, ['rt_admin', 'rw_admin']); // warga tidak boleh input
       const payload = req.body;
-      assertScope(user, payload.id_rt, null);
+      assertScope(user, payload.id_rt, payload.id_rw);
       const created = await addRow('Sensus', { id_warga: crypto.randomUUID(), ...payload });
       return res.status(201).json(created);
     }

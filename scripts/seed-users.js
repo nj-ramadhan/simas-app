@@ -57,7 +57,7 @@ const testUsers = [
   {
     nama: 'Admin Pusat',
     email: 'admin@simas.local',
-    password: 'GantiPasswordIni123',
+    password: 'admin123',
     role: 'rw_admin',
     rt: null,
   },
@@ -72,7 +72,7 @@ async function main() {
     let idRw = rwResult.rows[0]?.id_rw;
 
     if (!idRw) {
-      idRw = randomUUID();
+      idRw = 1;
       await pool.query('INSERT INTO rw (id_rw, nama_rw) VALUES ($1, $2)', [idRw, 'RW Contoh']);
       console.log('✅ Membuat RW Contoh');
     }
@@ -86,7 +86,7 @@ async function main() {
       if (rtResult.rows[0]) {
         rtMap[rtName] = rtResult.rows[0].id_rt;
       } else {
-        const newIdRt = randomUUID();
+        const newIdRt = rtName === 'RT 01' ? 1 : 2;
         await pool.query('INSERT INTO rt (id_rt, id_rw, nama_rt) VALUES ($1, $2, $3)', [
           newIdRt,
           idRw,

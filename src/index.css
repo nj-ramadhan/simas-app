@@ -4,7 +4,8 @@
 
 :root {
   font-family: 'Inter', "Segoe UI", Arial, sans-serif;
-  font-weight: 300;
+  font-weight: 400;
+  font-size: 16px;
   color: #244b45;
   background: #eefaf7;
   font-synthesis: none;
@@ -29,6 +30,8 @@ body {
     radial-gradient(circle at 15% 85%, rgba(34, 97, 139, 0.12) 0%, transparent 20%),
     #edf8f4;
 }
+
+label, input, select, textarea, button { font-size: 1rem; }
 
 #root {
   min-height: 100vh;

@@ -1,5 +1,5 @@
 // api/_lib/crudFactory.js
-import { getRows, addRow, updateRowById, deleteRowById } from './sheets.js';
+import { getRows, addRow } from './sheets.js';
 import { verifyToken, requireRole, assertScope } from './auth.js';
 
 export function createCrudHandler(sheetName, idField, writeRoles = ['rt_admin', 'rw_admin']) {
@@ -8,7 +8,7 @@ export function createCrudHandler(sheetName, idField, writeRoles = ['rt_admin', 
       const user = verifyToken(req);
       const scopeFilter = (data) => {
         if (user.role === 'rw_admin') return data; // difilter lebih lanjut per RT jika perlu
-        return data.filter(d => d.id_rt === user.id_rt);
+        return data.filter(d => user.id_rt == null || Number(d.id_rt) === Number(user.id_rt));
       };
 
       if (req.method === 'GET') {

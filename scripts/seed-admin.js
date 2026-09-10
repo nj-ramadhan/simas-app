@@ -28,8 +28,8 @@ async function main() {
   const EMAIL = 'admin@simas.local';   // <-- ganti sesuai keinginan
   const PASSWORD = 'admin'; // <-- WAJIB ganti sebelum run
 
-  const idRw = randomUUID();
-  const idRt = randomUUID();
+  const idRw = 1;
+  const idRt = 1;
   const idUser = randomUUID();
   const passwordHash = await bcrypt.hash(PASSWORD, 10);
 

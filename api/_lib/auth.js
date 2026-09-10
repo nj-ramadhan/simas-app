@@ -1,6 +1,12 @@
+import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 
+dotenv.config({ path: '.env.local', override: true });
+
 export function signToken(user) {
+  if (!process.env.JWT_SECRET) {
+    throw new AuthError('JWT_SECRET belum dikonfigurasi di environment server', 500);
+  }
   return jwt.sign(
     { id: user.id_user, role: user.role, id_rt: user.id_rt, id_rw: user.id_rw },
     process.env.JWT_SECRET,
@@ -9,6 +15,9 @@ export function signToken(user) {
 }
 
 export function verifyToken(req) {
+  if (!process.env.JWT_SECRET) {
+    throw new AuthError('JWT_SECRET belum dikonfigurasi di environment server', 500);
+  }
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
   if (!token) throw new AuthError('Token tidak ada', 401);
@@ -35,14 +44,16 @@ export function requireRole(user, allowedRoles) {
 
 // Guard: pastikan resource yang diakses ada dalam scope RT/RW milik user
 export function assertScope(user, targetIdRt, targetIdRw) {
+  const normalizedRt = targetIdRt === '' || targetIdRt == null ? null : Number(targetIdRt);
+  const normalizedRw = targetIdRw === '' || targetIdRw == null ? null : Number(targetIdRw);
   if (user.role === 'rw_admin') {
-    if (targetIdRw && targetIdRw !== user.id_rw) {
+    if (user.id_rw != null && normalizedRw != null && normalizedRw !== Number(user.id_rw)) {
       throw new AuthError('Di luar cakupan RW Anda', 403);
     }
     return;
   }
   if (user.role === 'rt_admin' || user.role === 'warga') {
-    if (targetIdRt && targetIdRt !== user.id_rt) {
+    if (user.id_rt != null && normalizedRt != null && normalizedRt !== Number(user.id_rt)) {
       throw new AuthError('Di luar cakupan RT Anda', 403);
     }
     return;

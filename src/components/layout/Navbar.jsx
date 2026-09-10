@@ -2,14 +2,19 @@ import { useAuth } from '../../context/AuthContext';
 
 const ROLE_LABEL = { rw_admin: 'Admin RW', rt_admin: 'Admin RT', warga: 'Warga' };
 
-export default function Navbar() {
+export default function Navbar({ sidebarOpen, onToggle }) {
   const { user } = useAuth();
 
   return (
     <header className="app-navbar">
       <div className="page-title-group">
-        <span className="page-kicker">Dashboard RT/RW</span>
-        <h1 className="page-title">SIMAS Dashboard</h1>
+        <button type="button" className="sidebar-toggle" onClick={onToggle} aria-label={sidebarOpen ? 'Tutup navigasi' : 'Buka navigasi'} aria-expanded={sidebarOpen}>
+          <span aria-hidden="true">{sidebarOpen ? '‹' : '☰'}</span>
+        </button>
+        <div className="page-title-text">
+          <span className="page-kicker">Dashboard RT/RW</span>
+          <h1 className="page-title">SIMDES Dashboard</h1>
+        </div>
       </div>
 
       <div className="navbar-actions">

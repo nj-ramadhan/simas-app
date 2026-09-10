@@ -5,15 +5,15 @@
 -- =============================================
 
 CREATE TABLE IF NOT EXISTS rw (
-  id_rw TEXT PRIMARY KEY,
+  id_rw INTEGER PRIMARY KEY,
   nama_rw TEXT,
   alamat TEXT,
   admin_rw_user_id TEXT
 );
 
 CREATE TABLE IF NOT EXISTS rt (
-  id_rt TEXT PRIMARY KEY,
-  id_rw TEXT REFERENCES rw(id_rw),
+  id_rt INTEGER PRIMARY KEY,
+  id_rw INTEGER REFERENCES rw(id_rw),
   nama_rt TEXT,
   admin_rt_user_id TEXT
 );
@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
   role TEXT NOT NULL CHECK (role IN ('rw_admin','rt_admin','warga')),
-  id_rt TEXT,
-  id_rw TEXT,
+  id_rt INTEGER,
+  id_rw INTEGER,
   status TEXT DEFAULT 'aktif',
   created_at TIMESTAMPTZ DEFAULT now()
 );
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS sensus (
   id_warga TEXT PRIMARY KEY,
-  id_rt TEXT,
+  id_rt INTEGER,
   nik TEXT,
   nama TEXT,
   jenis_kelamin TEXT,
@@ -44,13 +44,17 @@ CREATE TABLE IF NOT EXISTS sensus (
   no_kk TEXT,
   alamat TEXT,
   no_hp TEXT,
-  foto_url TEXT
+  foto_url TEXT,
+  keterangan_khusus TEXT
 );
+
+ALTER TABLE sensus ADD COLUMN IF NOT EXISTS id_rw INTEGER;
+ALTER TABLE sensus ADD COLUMN IF NOT EXISTS keterangan_khusus TEXT;
 
 CREATE TABLE IF NOT EXISTS jompo (
   id TEXT REFERENCES sensus(id_warga),
   id_warga TEXT,
-  id_rt TEXT,
+  id_rt INTEGER,
   usia INT,
   kondisi_kesehatan TEXT,
   penanggung_jawab TEXT,
@@ -60,7 +64,7 @@ CREATE TABLE IF NOT EXISTS jompo (
 CREATE TABLE IF NOT EXISTS anak (
   id TEXT REFERENCES sensus(id_warga),
   id_warga TEXT,
-  id_rt TEXT,
+  id_rt INTEGER,
   tgl_lahir DATE,
   sekolah TEXT,
   jenjang TEXT,
@@ -70,7 +74,7 @@ CREATE TABLE IF NOT EXISTS anak (
 CREATE TABLE IF NOT EXISTS inklusi (
   id TEXT REFERENCES sensus(id_warga),
   id_warga TEXT,
-  id_rt TEXT,
+  id_rt INTEGER,
   jenis_disabilitas TEXT,
   kebutuhan_bantuan TEXT,
   alat_bantu TEXT
@@ -80,7 +84,7 @@ CREATE TABLE IF NOT EXISTS inklusi (
 
 CREATE TABLE IF NOT EXISTS perusahaan (
   id TEXT PRIMARY KEY,
-  id_rt TEXT,
+  id_rt INTEGER,
   nama_usaha TEXT,
   jenis_usaha TEXT,
   pemilik TEXT,
@@ -90,7 +94,8 @@ CREATE TABLE IF NOT EXISTS perusahaan (
 
 CREATE TABLE IF NOT EXISTS lingkungan (
   id TEXT PRIMARY KEY,
-  id_rt TEXT,
+  id_rw INTEGER,
+  id_rt INTEGER,
   kategori TEXT,
   lokasi TEXT,
   kondisi TEXT,
@@ -99,7 +104,8 @@ CREATE TABLE IF NOT EXISTS lingkungan (
 
 CREATE TABLE IF NOT EXISTS infrastruktur (
   id TEXT PRIMARY KEY,
-  id_rt TEXT,
+  id_rw INTEGER,
+  id_rt INTEGER,
   jenis TEXT,
   lokasi TEXT,
   kondisi TEXT,
@@ -108,7 +114,8 @@ CREATE TABLE IF NOT EXISTS infrastruktur (
 
 CREATE TABLE IF NOT EXISTS aset (
   id TEXT PRIMARY KEY,
-  id_rt TEXT,
+  id_rw INTEGER,
+  id_rt INTEGER,
   nama_aset TEXT,
   kategori TEXT,
   jumlah INT,
@@ -124,7 +131,8 @@ CREATE TABLE IF NOT EXISTS aset (
 
 CREATE TABLE IF NOT EXISTS keuangan_global (
   id TEXT PRIMARY KEY,
-  id_rt TEXT,
+  id_rw INTEGER,
+  id_rt INTEGER,
   tanggal DATE,
   tipe TEXT CHECK (tipe IN ('masuk','keluar')),
   kategori TEXT,

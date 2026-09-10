@@ -27,7 +27,7 @@ export default function FormField({ field, value, onChange }) {
         type={type || 'text'}
         value={value || ''}
         required={required}
-        onChange={(e) => onChange(key, e.target.value)}
+        onChange={(e) => onChange(key, type === 'number' ? (e.target.value === '' ? '' : Number(e.target.value)) : e.target.value)}
         className="form-control"
       />
     </div>

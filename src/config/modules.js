@@ -1,7 +1,6 @@
 // Konfigurasi kolom tabel & field form untuk tiap modul data.
 // Dipakai oleh DataModulePage.jsx agar satu komponen bisa dipakai ulang
-// untuk semua modul (Sensus, Jompo, Anak, Inklusi, Perusahaan, Lingkungan,
-// Infrastruktur, Aset) tanpa duplikasi kode halaman.
+// untuk modul yang tersedia di API tanpa duplikasi kode halaman.
 
 export const MODULES = {
   sensus: {
@@ -9,6 +8,8 @@ export const MODULES = {
     apiPath: 'warga',
     idField: 'id_warga',
     columns: [
+      { key: 'id_rw', label: 'RW' },
+      { key: 'id_rt', label: 'RT' },
       { key: 'nik', label: 'NIK' },
       { key: 'nama', label: 'Nama' },
       { key: 'jenis_kelamin', label: 'L/P' },
@@ -17,89 +18,18 @@ export const MODULES = {
       { key: 'no_hp', label: 'No HP' },
     ],
     formFields: [
+      { key: 'id_rw', label: 'Nomor RW', type: 'number', required: true },
+      { key: 'id_rt', label: 'Nomor RT', type: 'number', required: true },
       { key: 'nik', label: 'NIK', type: 'text', required: true },
       { key: 'nama', label: 'Nama Lengkap', type: 'text', required: true },
       { key: 'jenis_kelamin', label: 'Jenis Kelamin', type: 'select', options: ['L', 'P'] },
       { key: 'tgl_lahir', label: 'Tanggal Lahir', type: 'date' },
-      { key: 'pekerjaan', label: 'Pekerjaan', type: 'text' },
+      { key: 'pekerjaan', label: 'Pekerjaan', type: 'select', options: ['Pelajar/Mahasiswa', 'PNS', 'TNI/Polri', 'Karyawan Swasta', 'Wiraswasta', 'Petani/Nelayan', 'Ibu Rumah Tangga', 'Pensiunan', 'Tidak Bekerja', 'Lainnya'] },
       { key: 'status_kk', label: 'Status dalam KK', type: 'text' },
       { key: 'no_kk', label: 'No. KK', type: 'text' },
       { key: 'alamat', label: 'Alamat', type: 'text' },
       { key: 'no_hp', label: 'No HP', type: 'text' },
-    ],
-  },
-  jompo: {
-    title: 'Data Lansia / Jompo',
-    apiPath: 'jompo',
-    idField: 'id',
-    columns: [
-      { key: 'id_warga', label: 'ID Warga' },
-      { key: 'usia', label: 'Usia' },
-      { key: 'kondisi_kesehatan', label: 'Kondisi Kesehatan' },
-      { key: 'penanggung_jawab', label: 'Penanggung Jawab' },
-    ],
-    formFields: [
-      { key: 'id_rt', label: 'ID RT', type: 'text', required: true },
-      { key: 'id_warga', label: 'ID Warga (dari data Sensus)', type: 'text', required: true },
-      { key: 'usia', label: 'Usia', type: 'number' },
-      { key: 'kondisi_kesehatan', label: 'Kondisi Kesehatan', type: 'text' },
-      { key: 'penanggung_jawab', label: 'Penanggung Jawab', type: 'text' },
-      { key: 'kebutuhan_khusus', label: 'Kebutuhan Khusus', type: 'text' },
-    ],
-  },
-  anak: {
-    title: 'Data Anak-anak',
-    apiPath: 'anak',
-    idField: 'id',
-    columns: [
-      { key: 'id_warga', label: 'ID Warga' },
-      { key: 'tgl_lahir', label: 'Tgl Lahir' },
-      { key: 'sekolah', label: 'Sekolah' },
-      { key: 'jenjang', label: 'Jenjang' },
-    ],
-    formFields: [
-      { key: 'id_rt', label: 'ID RT', type: 'text', required: true },
-      { key: 'id_warga', label: 'ID Warga (dari data Sensus)', type: 'text', required: true },
-      { key: 'tgl_lahir', label: 'Tanggal Lahir', type: 'date' },
-      { key: 'sekolah', label: 'Nama Sekolah', type: 'text' },
-      { key: 'jenjang', label: 'Jenjang Pendidikan', type: 'text' },
-      { key: 'nama_ortu', label: 'Nama Orang Tua', type: 'text' },
-    ],
-  },
-  inklusi: {
-    title: 'Data Warga Inklusi',
-    apiPath: 'inklusi',
-    idField: 'id',
-    columns: [
-      { key: 'id_warga', label: 'ID Warga' },
-      { key: 'jenis_disabilitas', label: 'Jenis Disabilitas' },
-      { key: 'kebutuhan_bantuan', label: 'Kebutuhan Bantuan' },
-    ],
-    formFields: [
-      { key: 'id_rt', label: 'ID RT', type: 'text', required: true },
-      { key: 'id_warga', label: 'ID Warga (dari data Sensus)', type: 'text', required: true },
-      { key: 'jenis_disabilitas', label: 'Jenis Disabilitas', type: 'text' },
-      { key: 'kebutuhan_bantuan', label: 'Kebutuhan Bantuan', type: 'text' },
-      { key: 'alat_bantu', label: 'Alat Bantu yang Dipakai', type: 'text' },
-    ],
-  },
-  perusahaan: {
-    title: 'Data Perusahaan / Usaha',
-    apiPath: 'perusahaan',
-    idField: 'id',
-    columns: [
-      { key: 'nama_usaha', label: 'Nama Usaha' },
-      { key: 'jenis_usaha', label: 'Jenis Usaha' },
-      { key: 'pemilik', label: 'Pemilik' },
-      { key: 'status_izin', label: 'Status Izin' },
-    ],
-    formFields: [
-      { key: 'id_rt', label: 'ID RT', type: 'text', required: true },
-      { key: 'nama_usaha', label: 'Nama Usaha', type: 'text', required: true },
-      { key: 'jenis_usaha', label: 'Jenis Usaha', type: 'text' },
-      { key: 'pemilik', label: 'Nama Pemilik', type: 'text' },
-      { key: 'alamat', label: 'Alamat', type: 'text' },
-      { key: 'status_izin', label: 'Status Izin', type: 'select', options: ['Ada', 'Tidak Ada', 'Dalam Proses'] },
+      { key: 'keterangan_khusus', label: 'Keterangan Khusus', type: 'text' },
     ],
   },
   lingkungan: {
@@ -113,7 +43,8 @@ export const MODULES = {
       { key: 'tgl_laporan', label: 'Tgl Laporan' },
     ],
     formFields: [
-      { key: 'id_rt', label: 'ID RT', type: 'text', required: true },
+      { key: 'id_rw', label: 'Nomor RW', type: 'number', required: true },
+      { key: 'id_rt', label: 'Nomor RT', type: 'number', required: true },
       { key: 'kategori', label: 'Kategori (drainase/pohon/TPS/dll)', type: 'text', required: true },
       { key: 'lokasi', label: 'Lokasi', type: 'text' },
       { key: 'kondisi', label: 'Kondisi', type: 'text' },
@@ -131,7 +62,8 @@ export const MODULES = {
       { key: 'tahun_bangun', label: 'Tahun Bangun' },
     ],
     formFields: [
-      { key: 'id_rt', label: 'ID RT', type: 'text', required: true },
+      { key: 'id_rw', label: 'Nomor RW', type: 'number', required: true },
+      { key: 'id_rt', label: 'Nomor RT', type: 'number', required: true },
       { key: 'jenis', label: 'Jenis (jalan/lampu/pos ronda/dll)', type: 'text', required: true },
       { key: 'lokasi', label: 'Lokasi', type: 'text' },
       { key: 'kondisi', label: 'Kondisi', type: 'text' },
@@ -149,7 +81,8 @@ export const MODULES = {
       { key: 'kondisi', label: 'Kondisi' },
     ],
     formFields: [
-      { key: 'id_rt', label: 'ID RT', type: 'text', required: true },
+      { key: 'id_rw', label: 'Nomor RW', type: 'number', required: true },
+      { key: 'id_rt', label: 'Nomor RT', type: 'number', required: true },
       { key: 'nama_aset', label: 'Nama Aset', type: 'text', required: true },
       { key: 'kategori', label: 'Kategori', type: 'text' },
       { key: 'jumlah', label: 'Jumlah', type: 'number' },

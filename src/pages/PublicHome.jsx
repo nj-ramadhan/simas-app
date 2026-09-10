@@ -1,0 +1,55 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import publicClient from '../api/publicClient';
+
+const money = (value) => `Rp ${Number(value || 0).toLocaleString('id-ID')}`;
+
+export default function PublicHome() {
+  const [filter, setFilter] = useState({ rw: '', rt: '', kategori: '' });
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  async function load() {
+    setLoading(true);
+    setError('');
+    try {
+      const params = new URLSearchParams();
+      if (filter.rw) params.set('rw', filter.rw);
+      if (filter.rt) params.set('rt', filter.rt);
+      if (filter.kategori) params.set('kategori', filter.kategori);
+      const response = await publicClient.get(`/public/transparency${params.toString() ? `?${params}` : ''}`);
+      if (!response.data || typeof response.data !== 'object' || !response.data.statistik) {
+        throw new Error('API transparansi belum tersedia. Jalankan vercel dev untuk mengaktifkan database.');
+      }
+      setData(response.data);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Informasi transparansi belum dapat dimuat');
+    } finally { setLoading(false); }
+  }
+
+  useEffect(() => {
+    // Load public transparency once when the portal opens.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function submit(event) { event.preventDefault(); load(); }
+
+  return <main className="public-home">
+    <header className="public-nav"><div className="public-brand"><span className="public-logo">S</span><div><strong>SIMDES</strong><small>Sistem Informasi Masyarakat Desa</small></div></div><Link className="public-login-button" to="/login">Masuk Pengelola</Link></header>
+    <section className="public-hero"><div><span className="section-kicker">Portal Transparansi Desa</span><h1>Informasi desa, terbuka untuk semua warga.</h1><p>Lihat ringkasan kependudukan dan keuangan desa berdasarkan RW atau RT tanpa harus masuk ke sistem pengelola.</p></div><div className="public-hero-mark">SIM<br />DES</div></section>
+    <section className="public-content">
+      <form className="public-filter" onSubmit={submit}><div><span className="panel-kicker">Cakupan Data</span><h2>Filter transparansi</h2></div><label>RW<input type="number" min="1" placeholder="Semua RW" value={filter.rw} onChange={(e) => setFilter({ ...filter, rw: e.target.value })} /></label><label>RT<input type="number" min="1" placeholder="Semua RT" value={filter.rt} onChange={(e) => setFilter({ ...filter, rt: e.target.value })} /></label><label>Kategori<select value={filter.kategori} onChange={(e) => setFilter({ ...filter, kategori: e.target.value })}><option value="">Semua kas</option><option value="global">Kas Global</option><option value="sampah">Iuran Sampah</option><option value="keamanan">Iuran Keamanan</option><option value="dana-sosial">Dana Sosial</option><option value="dana-kematian">Dana Kematian</option><option value="kompensasi">Dana Kompensasi</option></select></label><button className="primary-button" type="submit">Terapkan</button><button className="public-reset" type="button" onClick={() => { setFilter({ rw: '', rt: '', kategori: '' }); setTimeout(load, 0); }}>Reset</button></form>
+      {error && <p className="finance-error">{error}</p>}
+      {loading ? <div className="finance-empty">Memuat transparansi desa...</div> : data?.statistik && <>
+        <section className="public-stats"><PublicStat label="Total Warga" value={data.statistik.total_warga} /><PublicStat label="Anak" value={data.statistik.anak} /><PublicStat label="Jompo" value={data.statistik.jompo} /><PublicStat label="Usia Produktif" value={data.statistik.usia_produktif} /><PublicStat label="Laki-laki" value={data.statistik.laki_laki} /><PublicStat label="Perempuan" value={data.statistik.perempuan} /><PublicStat label="Saldo Kas" value={money(data.statistik.saldo)} /><PublicStat label="Transaksi" value={data.statistik.total_transaksi} /></section>
+        <section className="public-columns"><article className="public-panel"><div className="panel-header"><div><span className="panel-kicker">Kependudukan Umum</span><h2 className="panel-title">Ringkasan Klasifikasi</h2></div><span className="badge badge-info">Angka agregat</span></div><div className="public-breakdown"><Breakdown title="Pekerjaan" items={data.pekerjaan} /><Breakdown title="Kelompok usia" items={data.klasifikasi_usia} /></div></article><article className="public-panel"><div className="panel-header"><div><span className="panel-kicker">Kas Gabungan</span><h2 className="panel-title">Transparansi Keuangan</h2></div><span className="badge badge-success">{data.statistik.total_transaksi} transaksi</span></div><ul className="public-money-list"><li><span>Total masuk</span><strong>{money(data.statistik.total_masuk)}</strong></li><li><span>Total keluar</span><strong>{money(data.statistik.total_keluar)}</strong></li><li><span>Saldo</span><strong>{money(data.statistik.saldo)}</strong></li></ul><div className="public-breakdown">{data.keuangan_kategori.map((row) => <Breakdown key={row.label} title={row.label} items={[{ label: 'Saldo', jumlah: row.saldo }, { label: 'Transaksi', jumlah: row.transaksi }]} moneyValue={row.label !== 'global'} />)}</div></article></section>
+      </>}
+    </section>
+  </main>;
+}
+
+function PublicStat({ label, value }) { return <article className="public-stat"><span>{label}</span><strong>{value}</strong></article>; }
+function Breakdown({ title, items, moneyValue = false }) { return <div className="public-breakdown-group"><h3>{title}</h3>{items.map((item) => <div className="public-breakdown-row" key={item.label}><span>{item.label}</span><strong>{moneyValue && item.label === 'Saldo' ? money(item.jumlah) : Number(item.jumlah || 0).toLocaleString('id-ID')}</strong></div>)}</div>; }

@@ -6,7 +6,7 @@ import Modal from '../../components/common/Modal';
 import FormField from '../../components/common/FormField';
 
 // Komponen generic — dipakai ulang oleh semua halaman modul data
-// (Sensus, Jompo, Anak, Inklusi, Perusahaan, Lingkungan, Infrastruktur, Aset).
+// (Sensus, Lingkungan, Infrastruktur, dan Aset).
 // Perilaku baca/tulis otomatis menyesuaikan role user yang sedang login.
 export default function DataModulePage({ config }) {
   const { title, apiPath, idField, columns, formFields } = config;
@@ -34,13 +34,18 @@ export default function DataModulePage({ config }) {
   }
 
   useEffect(() => {
+    // Data loading synchronizes this view with the selected API module.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apiPath]);
 
   function openCreate() {
     setEditing(null);
-    setForm(user.role === 'rt_admin' ? { id_rt: user.id_rt } : {});
+    setForm({
+      ...(user.id_rw != null ? { id_rw: user.id_rw } : {}),
+      ...(user.id_rt != null ? { id_rt: user.id_rt } : {}),
+    });
     setShowModal(true);
   }
 

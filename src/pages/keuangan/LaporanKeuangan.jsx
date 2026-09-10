@@ -2,72 +2,90 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import client from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 const LABEL = {
   global: 'Kas Global', sampah: 'Iuran Sampah', keamanan: 'Iuran Keamanan',
   'dana-sosial': 'Dana Sosial', 'dana-kematian': 'Dana Kematian', kompensasi: 'Dana Kompensasi',
 };
+const EMPTY_FORM = { tanggal: '', tipe: 'masuk', kategori: '', jumlah: '', keterangan: '' };
+const currency = (value) => `Rp ${Number(value || 0).toLocaleString('id-ID')}`;
 
 export default function LaporanKeuangan() {
   const { jenis } = useParams();
   const { user } = useAuth();
   const [transaksi, setTransaksi] = useState([]);
   const [summary, setSummary] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ ...EMPTY_FORM, id_rw: user.id_rw ?? '', id_rt: user.id_rt ?? '' });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
   const canWrite = user.role === 'rt_admin' || user.role === 'rw_admin';
 
+  async function load() {
+    setLoading(true);
+    setError('');
+    try {
+      const [transactionsResponse, summaryResponse] = await Promise.all([
+        client.get(`/keuangan/${jenis}`), client.get(`/keuangan/${jenis}/summary`),
+      ]);
+      setTransaksi(transactionsResponse.data);
+      setSummary(summaryResponse.data);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Gagal memuat laporan keuangan');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
-    client.get(`/keuangan/${jenis}`).then(r => setTransaksi(r.data));
-    client.get(`/keuangan/${jenis}/summary`).then(r => setSummary(r.data));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jenis]);
 
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setSaving(true);
+    setError('');
+    try {
+      await client.post(`/keuangan/${jenis}`, { ...form, jumlah: Number(form.jumlah), id_rw: form.id_rw === '' ? null : Number(form.id_rw), id_rt: form.id_rt === '' ? null : Number(form.id_rt) });
+      setForm({ ...EMPTY_FORM, id_rw: user.id_rw ?? '', id_rt: user.id_rt ?? '' });
+      setShowForm(false);
+      await load();
+    } catch (err) {
+      setError(err.response?.data?.error || 'Gagal menyimpan transaksi');
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">Laporan Keuangan — {LABEL[jenis]}</h1>
-
-      {summary && (
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <StatCard label="Total Masuk" value={summary.total_masuk} color="green" />
-          <StatCard label="Total Keluar" value={summary.total_keluar} color="red" />
-          <StatCard label="Saldo" value={summary.saldo} color="blue" />
-        </div>
-      )}
-
-      {canWrite && <button className="mb-4 bg-blue-600 text-white px-4 py-2 rounded">
-        + Catat Transaksi
-      </button>}
-
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2 text-left">Tanggal</th>
-            <th className="p-2 text-left">Tipe</th>
-            <th className="p-2 text-left">Kategori</th>
-            <th className="p-2 text-right">Jumlah</th>
-            <th className="p-2 text-left">Keterangan</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transaksi.map(t => (
-            <tr key={t.id} className="border-b">
-              <td className="p-2">{t.tanggal}</td>
-              <td className={`p-2 ${t.tipe === 'masuk' ? 'text-green-600' : 'text-red-600'}`}>{t.tipe}</td>
-              <td className="p-2">{t.kategori}</td>
-              <td className="p-2 text-right">Rp {Number(t.jumlah).toLocaleString('id-ID')}</td>
-              <td className="p-2">{t.keterangan}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="finance-page">
+      <header className="finance-header">
+        <div><span className="section-kicker">Transparansi Keuangan</span><h1>{LABEL[jenis] || 'Laporan Keuangan'}</h1><p>Ringkasan transaksi yang tersimpan di database untuk wilayah Anda.</p></div>
+        {canWrite && <button type="button" className="primary-button" onClick={() => setShowForm((open) => !open)}>{showForm ? 'Tutup Form' : '+ Catat Transaksi'}</button>}
+      </header>
+      {error && <p className="finance-error">{error}</p>}
+      {showForm && <form onSubmit={handleSubmit} className="finance-form"><div className="finance-form-grid">
+        <label>Nomor RW<input required min="1" type="number" value={form.id_rw} onChange={(e) => setForm({ ...form, id_rw: e.target.value })} /></label>
+        <label>Nomor RT<input min="1" type="number" value={form.id_rt} onChange={(e) => setForm({ ...form, id_rt: e.target.value })} /></label>
+        <label>Tanggal<input required type="date" value={form.tanggal} onChange={(e) => setForm({ ...form, tanggal: e.target.value })} /></label>
+        <label>Tipe<select value={form.tipe} onChange={(e) => setForm({ ...form, tipe: e.target.value })}><option value="masuk">Masuk</option><option value="keluar">Keluar</option></select></label>
+        <label>Kategori<input required value={form.kategori} onChange={(e) => setForm({ ...form, kategori: e.target.value })} /></label>
+        <label>Jumlah<input required min="0" type="number" value={form.jumlah} onChange={(e) => setForm({ ...form, jumlah: e.target.value })} /></label>
+        <label className="finance-form-wide">Keterangan<input value={form.keterangan} onChange={(e) => setForm({ ...form, keterangan: e.target.value })} /></label>
+      </div><button type="submit" className="submit-button" disabled={saving}>{saving ? 'Menyimpan...' : 'Simpan Transaksi'}</button></form>}
+      {loading ? <div className="finance-empty">Memuat data keuangan...</div> : <>
+        <section className="finance-summary-grid"><FinanceStat label="Total Masuk" value={summary?.total_masuk} tone="income" /><FinanceStat label="Total Keluar" value={summary?.total_keluar} tone="expense" /><FinanceStat label="Saldo Berjalan" value={summary?.saldo} tone="balance" /><FinanceStat label="Jumlah Transaksi" value={summary?.jumlah_transaksi || 0} tone="count" isCount /></section>
+        <section className="finance-table-panel"><div className="panel-header"><div><span className="panel-kicker">Data Database</span><h2 className="panel-title">Riwayat Transaksi</h2></div><span className="badge badge-info">{transaksi.length} transaksi</span></div>
+          {transaksi.length === 0 ? <div className="finance-empty">Belum ada transaksi pada laporan ini.</div> : <div className="finance-table-wrap"><table className="finance-table"><thead><tr><th>Tanggal</th><th>Tipe</th><th>Kategori</th><th>Jumlah</th><th>Keterangan</th></tr></thead><tbody>{transaksi.map((item) => <tr key={item.id}><td>{item.tanggal ? new Date(item.tanggal).toLocaleDateString('id-ID') : '-'}</td><td><span className={`transaction-type ${item.tipe}`}>{item.tipe}</span></td><td>{item.kategori || '-'}</td><td className="amount">{currency(item.jumlah)}</td><td>{item.keterangan || '-'}</td></tr>)}</tbody></table></div>}
+        </section>
+      </>}
     </div>
   );
 }
 
-function StatCard({ label, value, color }) {
-  return (
-    <div className={`p-4 rounded-lg border-l-4 border-${color}-500 bg-white shadow-sm`}>
-      <p className="text-gray-500 text-sm">{label}</p>
-      <p className="text-2xl font-bold">Rp {Number(value).toLocaleString('id-ID')}</p>
-    </div>
-  );
+function FinanceStat({ label, value, tone, isCount = false }) {
+  return <article className={`finance-stat finance-stat-${tone}`}><span className="finance-stat-label">{label}</span><strong>{isCount ? Number(value || 0).toLocaleString('id-ID') : currency(value)}</strong></article>;
 }

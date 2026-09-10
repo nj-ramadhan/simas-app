@@ -33,21 +33,23 @@ const KEUANGAN_MENU = [
   { jenis: 'kompensasi', label: 'Dana Kompensasi' },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ open, onToggle }) {
   const { user, logout } = useAuth();
   const menu = MENU_BY_ROLE[user.role] || [];
 
   return (
-    <aside className="app-sidebar">
+    <aside className="app-sidebar" aria-hidden={!open}>
       <div className="brand-wrap">
         <div className="brand-icon">
           <span aria-hidden="true">S</span>
         </div>
         <div>
-          <div className="brand-title">SIMAS</div>
-          <div className="brand-subtitle">Sistem Informasi</div>
+          <div className="brand-title">SIMDES</div>
+          <div className="brand-subtitle">Sistem Informasi Desa</div>
         </div>
       </div>
+
+      <button type="button" className="sidebar-close" onClick={onToggle} aria-label="Tutup navigasi">×</button>
 
       <div className="profile-card">
         <div className="profile-avatar">

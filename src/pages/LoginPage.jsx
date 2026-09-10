@@ -29,8 +29,8 @@ export default function LoginPage() {
           <div className="login-brand-content">
             <div className="login-logo">S</div>
             <div>
-              <h1>SIMAS</h1>
-              <p>Sistem Informasi Masyarakat</p>
+              <h1>SIMDES</h1>
+              <p>Sistem Informasi Masyarakat Desa</p>
             </div>
           </div>
           <div className="login-highlight">
@@ -44,6 +44,7 @@ export default function LoginPage() {
             <div className="login-header">
               <span className="login-kicker">Portal Login</span>
               <h2>Selamat Datang</h2>
+              <button type="button" className="back-to-public" onClick={() => navigate('/')}>← Kembali ke Transparansi</button>
             </div>
             {error && <p className="login-error">{error}</p>}
             <div className="field-group">

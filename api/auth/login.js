@@ -15,7 +15,8 @@ export default async function handler(req, res) {
     if (!valid) return res.status(401).json({ error: 'Email atau password salah' });
 
     const token = signToken(user);
-    const { password_hash, ...safeUser } = user;
+    const safeUser = { ...user };
+    delete safeUser.password_hash;
     return res.status(200).json({ token, user: safeUser });
   } catch (err) {
     return res.status(500).json({ error: err.message });
